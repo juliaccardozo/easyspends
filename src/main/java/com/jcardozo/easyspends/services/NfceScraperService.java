@@ -64,6 +64,12 @@ public class NfceScraperService {
         }
         purchase.setTotalPayment(toBigDecimal(totalText));
 
+        String totalItemsQuantity = safeClassText(nfceElement, "totalNumb", 0, "00000000000000");
+        if (totalItemsQuantity == null) {
+            throw new NfceProcessingException("Total payment not found in invoice.");
+        }
+        purchase.setTotalItensQuantity(toInteger(totalItemsQuantity));
+
         Elements receiptProducts = nfceElement.getElementsByTag("tr");
         if (receiptProducts.isEmpty()) {
             throw new NfceProcessingException("No products found in invoice.");
@@ -148,6 +154,16 @@ public class NfceScraperService {
             return new BigDecimal(clean);
         } catch (Exception e) {
             return BigDecimal.ZERO;
+        }
+    }
+
+    private Integer toInteger(String text) {
+        if (text == null || text.isBlank()) return 0;
+        try {
+            String clean = text.replaceAll("[^\\d,]", "").replace(",", ".");
+            return Integer.parseInt(clean);
+        } catch (Exception e) {
+            return 0;
         }
     }
 }
