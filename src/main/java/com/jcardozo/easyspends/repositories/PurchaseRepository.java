@@ -24,4 +24,6 @@ public interface PurchaseRepository extends JpaRepository<Purchase, Long> {
             ORDER BY p.issueDate DESC
     """)
     List<PurchaseDTO> findPurchasesByPeriod(LocalDateTime startDate, LocalDateTime endDate);
+
+    List<Purchase> findByIssueDateBetween(LocalDateTime start, LocalDateTime end);
 }

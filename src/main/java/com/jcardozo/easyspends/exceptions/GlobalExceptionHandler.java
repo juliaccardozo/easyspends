@@ -14,8 +14,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(PurchaseException.class)
-    public ResponseEntity<String> purchaseException(HttpStatus httpStatus, PurchaseException ex) {
-        return ResponseEntity.status(httpStatus).body(ex.getMessage());
+    public ResponseEntity<String> handleCategoryException(PurchaseException ex) {
+        return ResponseEntity.status(ex.getStatus()).body(ex.getMessage());
     }
 
     @ExceptionHandler(ProductException.class)

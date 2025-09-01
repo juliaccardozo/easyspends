@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/purchases")
-@Tag(name = "Purchases", description = "Gerenciamento de compras do usuário")
+@Tag(name = "Purchases", description = "Purchase Management")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class PurchaseController {
     public final PurchaseService purchaseService;

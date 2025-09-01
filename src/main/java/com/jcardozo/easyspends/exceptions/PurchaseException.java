@@ -2,14 +2,20 @@ package com.jcardozo.easyspends.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class PurchaseException extends Throwable {
-    public PurchaseException(String message) {
+public class PurchaseException extends RuntimeException {
+    private final HttpStatus status;
+
+    public PurchaseException(HttpStatus status, String message) {
         super(message);
+        this.status = status;
     }
 
-    public PurchaseException(String message, Throwable cause) {
+    public PurchaseException(HttpStatus status, String message, Throwable cause) {
         super(message, cause);
+        this.status = status;
     }
 
-    public PurchaseException(HttpStatus httpStatus, String s) {}
+    public HttpStatus getStatus() {
+        return status;
+    }
 }

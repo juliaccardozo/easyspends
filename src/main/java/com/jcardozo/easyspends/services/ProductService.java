@@ -23,7 +23,7 @@ public class ProductService {
     }
 
     @Transactional
-    public Integer updateProductCategory(Long id, Category category) throws ProductException, CategoryException {
+    public Integer updateProductCategory(Long id, Category category) {
         if (categoryRepository.findById(category.getId()).isEmpty()) {
             throw new CategoryException(HttpStatus.NOT_FOUND, "Category not found.");
         }
