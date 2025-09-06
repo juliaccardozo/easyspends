@@ -30,12 +30,18 @@ public class Purchase {
     @Column(name = "total_itens_quantity", nullable = false)
     private int totalItensQuantity;
 
+    @Column(name = "total_value")
+    private BigDecimal totalValue;
+
     @Column(name = "total_payment", nullable = false)
     private BigDecimal totalPayment;
+
+    @Column(name = "discount")
+    private BigDecimal discount;
 
     @Column(name = "issue_date", nullable = false)
     private LocalDateTime issueDate;
 
-    @Column(name = "access_key")
+    @Column(name = "access_key", nullable = false)
     private String accessKey;
 }

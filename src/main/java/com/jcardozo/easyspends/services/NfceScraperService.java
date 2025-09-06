@@ -58,17 +58,26 @@ public class NfceScraperService {
         purchase.setCnpj(safeClassText(nfceElement, "text", 0, "00000000000000")
                 .replaceAll("\\D", ""));
 
-        String totalText = safeClassText(nfceElement, "totalNumb txtMax", 0, null);
-        if (totalText == null) {
-            throw new NfceProcessingException("Total payment not found in invoice.");
+        Element totalElement = nfceElement.getElementById("totalNota");
+        if (totalElement == null) {
+            throw new NfceProcessingException("Invoice total section not found.");
         }
-        purchase.setTotalPayment(toBigDecimal(totalText));
 
-        String totalItemsQuantity = safeClassText(nfceElement, "totalNumb", 0, "00000000000000");
-        if (totalItemsQuantity == null) {
-            throw new NfceProcessingException("Total payment not found in invoice.");
+        Elements lines = totalElement.getElementsByAttributeValue("id", "linhaTotal");
+        for (Element linha : lines) {
+            String label = linha.getElementsByTag("label").text().trim();
+            String value = linha.getElementsByTag("span").text().trim();
+
+            if (label.startsWith("Qtd. total de itens")) {
+                purchase.setTotalItensQuantity(toInteger(value));
+            } else if (label.startsWith("Valor total R$")) {
+                purchase.setTotalValue(toBigDecimal(value));
+            } else if (label.startsWith("Descontos R$")) {
+                purchase.setDiscount(toBigDecimal(value));
+            } else if (label.startsWith("Valor a pagar R$")) {
+                purchase.setTotalPayment(toBigDecimal(value));
+            }
         }
-        purchase.setTotalItensQuantity(toInteger(totalItemsQuantity));
 
         Elements receiptProducts = nfceElement.getElementsByTag("tr");
         if (receiptProducts.isEmpty()) {
@@ -107,8 +116,7 @@ public class NfceScraperService {
         }
 
         String accessKey = Optional.of(infoElement.getElementsByClass("chave"))
-                .map(Elements::text)
-                .filter(s -> !s.isBlank())
+                .map(Elements::text).filter(s -> !s.isBlank())
                 .orElseThrow(() -> new NfceProcessingException("Access key not found in invoice."));
         purchase.setAccessKey(accessKey);
 
@@ -143,7 +151,7 @@ public class NfceScraperService {
         try {
             return PackagingUnit.valueOf(text.split(": ")[1]).getName();
         } catch (Exception e) {
-            return "UNDEFINED";
+            return "UNKNOWN";
         }
     }
 
